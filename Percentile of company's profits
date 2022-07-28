@@ -1,0 +1,11 @@
+CREATE TEMP TABLE profit80 AS
+  SELECT sector, 
+         percentile_disc(0.8) WITHIN GROUP (ORDER BY profits) AS pct80
+    FROM fortune500 
+   GROUP BY sector;
+SELECT title, fortune500.sector, 
+       profits, profits/pct80 AS ratio
+  FROM fortune500 
+       LEFT JOIN profit80
+       ON profit80.sector = fortune500.sector
+ WHERE profits > pct80;
